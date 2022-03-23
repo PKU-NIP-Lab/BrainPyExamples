@@ -90,12 +90,11 @@ def find_fixed_points(cann, do_pca=False, do_animation=False, tolerance=1e-8):
   finder.find_fps_with_gd_method(
     candidates=candidates,
     tolerance=1e-6, num_batch=200,
-    opt_setting=dict(method=bm.optimizers.Adam,
-                     lr=bm.optimizers.ExponentialDecay(0.1, 2, 0.999)),
+    optimizer=bp.optim.Adam(lr=bp.optim.ExponentialDecay(0.1, 2, 0.999)),
   )
   finder.filter_loss(tolerance)
   finder.keep_unique()
-  finder.exclude_outliers()
+  # finder.exclude_outliers(tolerance=1e1)
 
   print('Losses of fixed points:')
   print(finder.losses)
@@ -169,7 +168,7 @@ fps = find_fixed_points(model, do_pca=True, do_animation=False)
 # verify_fp_through_simulation(model, fps)
 
 # %%
-visualize_fixed_points(fps, plot_ids=(0, 10, 20, 30, 40, 50, 60), xs=model.x)
+visualize_fixed_points(fps, plot_ids=(10, 20, 30, 40, 50, 60, 70), xs=model.x)
 
 # %%
 verify_fixed_point_stability(model, fps, num=6)

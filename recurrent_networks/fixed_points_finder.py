@@ -126,7 +126,7 @@ def plot_params(rnn, show_top_eig=0):
 
   plt.subplot(236)
   dFdh = bm.jacobian(rnn.cell)(rnn.h0.value, bm.zeros(rnn.num_input))
-  evals, _ = np.linalg.eig(dFdh.numpy())
+  evals, _ = np.linalg.eig(bm.as_numpy(dFdh))
   x = np.linspace(-1, 1, 1000)
   plt.plot(x, np.sqrt(1 - x ** 2), 'k')
   plt.plot(x, -np.sqrt(1 - x ** 2), 'k')
@@ -305,8 +305,8 @@ net = GRU(num_input=1, num_hidden=100, num_output=1, num_batch=num_batch, l2_reg
 # plot_params(net)
 
 # %%
-lr = bm.optimizers.ExponentialDecay(lr=0.04, decay_steps=1, decay_rate=0.9999)
-optimizer = bm.optimizers.Adam(lr=lr, train_vars=net.train_vars(), eps=1e-1)
+lr = bp.optim.ExponentialDecay(lr=0.04, decay_steps=1, decay_rate=0.9999)
+optimizer = bp.optim.Adam(lr=lr, train_vars=net.train_vars(), eps=1e-1)
 
 
 @bm.jit
@@ -402,19 +402,22 @@ f_cell = lambda h: net.cell(h, bm.zeros(net.num_input))
 fp_candidates = hiddens.reshape((-1, net.num_hidden))
 
 # %%
-finder = bp.analysis.numeric.SlowPointFinder(
+finder = bp.analysis.SlowPointFinder(
   f_cell=f_cell,
-  f_type='F',
-  tol_outlier=.1,
-  tol_opt=5e-7,
-  tol_speed=1e-7,
-  tol_unique=0.0005,
-  opt_setting=dict(method=bm.optimizers.Adam,
-                   lr=bm.optimizers.ExponentialDecay(0.2, 1, 0.9999),
-                   eps=1e-8),
-  num_opt_batch=400, 
+  f_type='discrete',
 )
-fps, fp_losses, keep_ids, opt_losses = finder.find_fixed_points(candidates=fp_candidates)
+finder.find_fps_with_gd_method(
+  candidates=fp_candidates,
+  tolerance=5e-7, num_batch=400,
+  optimizer=bp.optim.Adam(lr=bp.optim.ExponentialDecay(0.2, 1, 0.9999), eps=1e-8),
+)
+finder.filter_loss(tolerance=1e-7)
+finder.keep_unique(tolerance=0.0005)
+finder.exclude_outliers(0.1)
+fps = finder.fixed_points
+
+#
+# fps, fp_losses, keep_ids, opt_losses = finder.find_fixed_points(candidates=fp_candidates)
 
 # %% [markdown]
 # ### Verify fixed points
@@ -423,13 +426,13 @@ fps, fp_losses, keep_ids, opt_losses = finder.find_fixed_points(candidates=fp_ca
 # Plotting the quality of the fixed points.
 
 # %%
-# %matplotlib inline
+# # %matplotlib inline
 
 # %%
 fig, gs = bp.visualize.get_figure(1, 2, 4, 6)
 
 fig.add_subplot(gs[0, 0])
-plt.semilogy(fp_losses)
+plt.semilogy(finder.losses)
 plt.xlabel('Fixed point #')
 plt.ylabel('Fixed point loss')
 
@@ -488,7 +491,7 @@ sorted_fps = sorted_fps[0:-1:downsample_fps]
 # Now, through a series of plots and dot products, we will see how the GRU solved the binary decision task. Now, let's  plot the fixed points and the fixed point candidates that the fixed point optimization was seeded with. Black shows the original candidate point, the colored stars show the fixed point, where the color of the fixed point is the projection onto the readout vector and the size is commensurate with how slow it is (slower is larger).
 
 # %%
-# %matplotlib qt
+# # %matplotlib qt
 
 # %%
 from sklearn.decomposition import PCA

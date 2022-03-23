@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.5
+#       jupytext_version: 1.11.4
 #   kernelspec:
 #     display_name: jax-cpu
 #     language: python
@@ -139,7 +139,7 @@ predict = bm.jit(net.predict, dyn_vars=net.vars())
 
 # %%
 # Adam optimizer
-opt = bm.optimizers.Adam(lr=0.001, train_vars=net.train_vars().unique())
+opt = bp.optim.Adam(lr=0.001, train_vars=net.train_vars().unique())
 
 # %%
 # gradient function

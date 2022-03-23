@@ -23,6 +23,7 @@
 # %%
 import matplotlib.pyplot as plt
 import numpy as np
+import jax
 
 # %%
 import brainpy as bp
@@ -130,7 +131,7 @@ bp.visualize.animate_2D(values=runner.mon.r,
 length = 20
 positions = bp.inputs.ramp_input(-bm.pi, bm.pi, duration=length, t_start=0)
 positions = bm.stack([positions, positions]).T
-Iext = bm.vmap(cann.get_stimulus_by_pos)(positions)
+Iext = jax.vmap(cann.get_stimulus_by_pos)(positions)
 runner = bp.dyn.DSRunner(cann,
                          inputs=['input', Iext, 'iter'],
                          monitors=['r'],

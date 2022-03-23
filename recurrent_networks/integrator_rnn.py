@@ -261,8 +261,8 @@ net = IntegratorRNN(num_input=1, num_hidden=100, num_output=1, num_batch=num_bat
 plot_params(net)
 
 # %%
-lr = bm.optimizers.ExponentialDecay(lr=0.025, decay_steps=1, decay_rate=0.99975)
-optimizer = bm.optimizers.Adam(lr=lr, train_vars=net.train_vars(), eps=1e-1)
+lr = bp.optim.ExponentialDecay(lr=0.025, decay_steps=1, decay_rate=0.99975)
+optimizer = bp.optim.Adam(lr=lr, train_vars=net.train_vars(), eps=1e-1)
 grad_f = bm.grad(net.loss, dyn_vars=net.vars(), grad_vars=net.train_vars(), return_value=True)
 
 

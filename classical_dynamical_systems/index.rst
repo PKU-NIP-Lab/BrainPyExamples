@@ -7,3 +7,4 @@
     mackey_glass_eq.ipynb
     Multiscroll_attractor.ipynb
     Rabinovich_Fabrikant_eq.ipynb
+    fractional_order_chaos.ipynb

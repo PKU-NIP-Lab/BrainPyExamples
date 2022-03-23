@@ -191,7 +191,7 @@ class Model(bp.layers.Module):
     logits, hist_h = self.predict(inputs)
 
     # Calculate the performance loss
-    perf_loss = bm.losses.cross_entropy_loss(logits, targets, reduction='none') * mask
+    perf_loss = bp.losses.cross_entropy_loss(logits, targets, reduction='none') * mask
     self.perf_loss[:] = bm.mean(perf_loss)
 
     # L1/L2 penalty term on hidden state activity to encourage low spike rate solutions
@@ -239,7 +239,7 @@ def trial(task_name, save_fn=None, num_iterations=2000, iter_between_outputs=5):
   # task.plot_neural_input(trial_info)
 
   model = Model(task)
-  opt = bm.optimizers.Adam(learning_rate, train_vars=model.train_vars())
+  opt = bp.optimizers.Adam(learning_rate, train_vars=model.train_vars())
   grad_f = bm.grad(model.loss_func, 
                    dyn_vars=model.vars(),
                    grad_vars=model.train_vars(),
