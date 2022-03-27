@@ -1,8 +1,8 @@
 .. toctree::
    :maxdepth: 1
 
-   esn_introduction.ipynb
-   ../recurrent_networks/Sussillo_Abbott_2009_FORCE_Learning.ipynb
+   predicting_Mackey_Glass_timeseries.ipynb
+   Gauthier_2021_ngrc.ipynb
 
 
 
