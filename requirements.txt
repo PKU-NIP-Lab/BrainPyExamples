@@ -1,10 +1,10 @@
-brain-py>=2.0.0
+brain-py>=2.1.0
 brainmodels>=0.4.0
 
 # docs
 pandoc
 docutils
-Jinja2
+Jinja2<3.1
 sphinx
 nbsphinx
 sphinx_rtd_theme>=1.0.0
