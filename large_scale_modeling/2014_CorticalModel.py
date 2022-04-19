@@ -287,7 +287,7 @@ class CorticalMicrocircuit(bp.Network):
 
     # NEURON & SYNAPSE: thalamus inputs
     if has_thalamus:
-      thalamus = bp.models.PoissonInput(self.layer_num[-1], freqs=15.)
+      thalamus = bp.dyn.PoissonInput(self.layer_num[-1], freqs=15.)
       self.populations[self.layer_name[-1]] = thalamus
       for r in range(0, 8):
         l_name = self.layer_name[r]
