@@ -7,7 +7,7 @@ import numpy as np
 bp.math.set_platform('cpu')
 
 
-class LIF(bp.NeuGroup):
+class LIF(bp.dyn.NeuGroup):
   def __init__(self, size, tau_neu=10., tau_syn=0.5, tau_ref=2.,
                V_reset=-65., V_th=-50., Cm=0.25, ):
     super(LIF, self).__init__(size=size)
@@ -47,7 +47,7 @@ class LIF(bp.NeuGroup):
     self.I.value = I
 
 
-class ExpSyn(bp.TwoEndConn):
+class ExpSyn(bp.dyn.TwoEndConn):
   # Synapses parameters
   exc_delay = (1.5, 0.75)  # Excitatory/Std. delay [ms]
   inh_delay = (0.80, 0.4)  # Inhibitory/Std. delay [ms]
@@ -211,7 +211,7 @@ class ThalamusInput(bp.TwoEndConn):
     bm.make_cond(true_fn, lambda _: None, dyn_vars=(self.post.I, self.pre.spike))(self.turn_on[0])
 
 
-class CorticalMicrocircuit(bp.Network):
+class CorticalMicrocircuit(bp.dyn.Network):
   # Names for each layer:
   layer_name = ['L23e', 'L23i', 'L4e', 'L4i', 'L5e', 'L5i', 'L6e', 'L6i', 'Th']
 
